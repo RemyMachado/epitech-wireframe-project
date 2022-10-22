@@ -24,6 +24,10 @@ struct framebuffer *framebuffer_create(unsigned int width, unsigned int height) 
     return framebuffer;
 }
 
+void framebuffer_destroy(struct framebuffer *framebuffer) {
+    free(framebuffer)
+}
+
 void my_put_pixel(struct framebuffer *framebuffer, unsigned int x, unsigned int y, sfColor color) {
     const int index = (y * framebuffer->width) * 4 + x * 4;
 
@@ -86,6 +90,10 @@ int main() {
         if (i < 1920) { ++i; }
     }
 
+    /* Cleanup resources */
+    framebuffer_destroy(framebuffer);
+    sfSprite_destroy(sprite);
+    sfTexture_destroy(texture);
     sfRenderWindow_destroy(window);
-    return 0;
+    return EXIT_SUCCESS;
 }
