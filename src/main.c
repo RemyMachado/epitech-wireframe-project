@@ -37,6 +37,14 @@ void my_put_pixel(struct framebuffer *framebuffer, unsigned int x, unsigned int 
     framebuffer->pixels[index + 3] = color.a;
 }
 
+void my_put_square(struct framebuffer *framebuffer, unsigned int size, unsigned int x, unsigned int y, sfColor color) {
+    for (unsigned int i = 0; i < size; ++i) {
+        for (unsigned int j = 0; j < size; ++j) {
+            my_put_pixel(framebuffer, x + j, y + i, color);
+        }
+    }
+}
+
 int main() {
     sfVideoMode videoMode = {WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BITS_PER_PIXEL};
     sfRenderWindow *window;
@@ -65,16 +73,18 @@ int main() {
 
     printf("Hello, World!\n");
 
-    int i = 0;
     while (sfRenderWindow_isOpen(window)) {
         sfRenderWindow_display(window);
 
         while (sfRenderWindow_pollEvent(window, &event)) {
-            if (event.type == sfEvtClosed) { sfRenderWindow_close(window); }
+            if (event.type == sfEvtClosed) {
+                sfRenderWindow_close(window);
+            }
         }
 
         /* Draw the pixel at (100,100) in the framebuffer */
-        my_put_pixel(framebuffer, i, 0, sfRed);
+        //        my_put_pixel(framebuffer, 100, 100, sfRed);
+        my_put_square(framebuffer, 400, 500, 500, sfBlue);
 
         /* Update the texture from the pixels array of the framebuffer */
         sfTexture_updateFromPixels(texture, framebuffer->pixels, framebuffer->width, framebuffer->height, 0, 0);
@@ -87,7 +97,6 @@ int main() {
 
         /* Update the window */
         sfRenderWindow_display(window);
-        if (i < 1920) { ++i; }
     }
 
     /* Cleanup resources */
