@@ -25,7 +25,7 @@ struct framebuffer *framebuffer_create(unsigned int width, unsigned int height) 
 }
 
 void framebuffer_destroy(struct framebuffer *framebuffer) {
-    free(framebuffer)
+    free(framebuffer);
 }
 
 void my_put_pixel(struct framebuffer *framebuffer, unsigned int x, unsigned int y, sfColor color) {
