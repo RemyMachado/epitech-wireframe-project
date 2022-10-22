@@ -1,3 +1,4 @@
 #!/bin/bash
 
-gcc -Wall -Wextra main.c -lcsfml-graphics -lcsfml-window
+rm a.out
+gcc -Wall -Wextra src/*.c -lcsfml-graphics -lcsfml-window
