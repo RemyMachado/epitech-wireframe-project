@@ -1,5 +1,6 @@
 #include "draw.h"
 #include <SFML/Graphics.h>
+#include <math.h>
 #include <stdlib.h>
 
 struct framebuffer *framebuffer_create(unsigned int width, unsigned int height) {
@@ -89,5 +90,62 @@ void my_put_square_matrix(struct framebuffer *framebuffer, unsigned int squareSi
                                  newTopRightB + newBottomRightB, newTopRightA + newBottomRightA};
 
         my_put_square_line(framebuffer, squareSize, matrixSize, x, y + (squareSize * i), newLeftColor, newRightColor);
+    }
+}
+
+/* y = ax + b */
+void my_draw_line(struct framebuffer *framebuffer, sfVector2f from, sfVector2f to, sfColor color) {
+    float slope = 0;
+    float b = from.y;
+    sfVector2f vector = {to.x - from.x, to.y - from.y};
+
+    // vertical line
+    if (vector.x == 0) {
+        if (vector.y > 0) {
+            for (int y = 0; y < vector.y; ++y) {
+                my_put_pixel(framebuffer, from.x, b + y, color);
+            }
+        } else {
+            for (int y = 0; y > vector.y; --y) {
+                my_put_pixel(framebuffer, from.x, b + y, color);
+            }
+        }
+
+        return;
+    }
+
+    slope = vector.y / vector.x;
+
+    // if `y` is growing faster than `x`, then we have to draw on the y-axis for a nicer axis drawing
+    if (fabs(slope) > 1) {
+        if (vector.y > 0) {
+            for (int y = 0; y < vector.y; ++y) {
+                const float x = y / slope;
+
+                my_put_pixel(framebuffer, from.x + x, b + y, color);
+            }
+        } else {
+            for (int y = 0; y > vector.y; --y) {
+                const float x = y / slope;
+
+                my_put_pixel(framebuffer, from.x + x, b + y, color);
+            }
+        }
+    } else {
+        if (vector.x > 0) {
+            for (int x = 0; x < vector.x; ++x) {
+                /* y = ax + b */
+                const float y = slope * x + b;
+
+                my_put_pixel(framebuffer, from.x + x, y, color);
+            }
+        } else {
+            for (int x = 0; x > vector.x; --x) {
+                /* y = ax + b */
+                const float y = slope * x + b;
+
+                my_put_pixel(framebuffer, from.x + x, y, color);
+            }
+        }
     }
 }

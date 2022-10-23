@@ -61,8 +61,15 @@ int main() {
         //        my_put_square(framebuffer, 300, 500, 200, sfRed);
         //        my_put_square_line(framebuffer, 150, 10, 0, 0, sfRed, sfBlue);
         //        my_put_square_matrix(framebuffer, 90, 10, 0, 0, sfRed, sfBlue, sfCyan, sfYellow);
-        my_put_square_matrix(framebuffer, 18, 50, 0, 0, sfRed, sfBlue, sfCyan, sfYellow);
+        //        my_put_square_matrix(framebuffer, 18, 50, 0, 0, sfRed, sfBlue, sfCyan, sfYellow);
         //        my_put_square_matrix(framebuffer, 9, 100, 0, 0, sfRed, sfBlue, sfCyan, sfYellow);
+        my_put_rect(framebuffer, framebuffer->width / 2, framebuffer->height / 2, 0, 0, sfBlue);
+        my_put_rect(framebuffer, framebuffer->width / 2, framebuffer->height / 2, framebuffer->width / 2, 0, sfRed);
+        my_put_rect(framebuffer, framebuffer->width / 2, framebuffer->height / 2, 0, framebuffer->height / 2, sfGreen);
+        my_put_rect(framebuffer, framebuffer->width / 2, framebuffer->height / 2, framebuffer->width / 2,
+                    framebuffer->height / 2, sfCyan);
+        my_draw_line(framebuffer, (sfVector2f){framebuffer->width / 2 + 200, framebuffer->height / 2 - 200},
+                     (sfVector2f){framebuffer->width / 2 - 200, framebuffer->height / 2 + 200}, sfWhite);
 
         /* Update the texture from the pixels array of the framebuffer */
         sfTexture_updateFromPixels(texture, framebuffer->pixels, framebuffer->width, framebuffer->height, 0, 0);
