@@ -15,7 +15,7 @@ void framebuffer_destroy(struct framebuffer *framebuffer);
 void my_put_pixel(struct framebuffer *framebuffer, unsigned int x, unsigned int y, sfColor color);
 void my_put_rect(struct framebuffer *framebuffer, unsigned int width, unsigned int height, unsigned int x,
                  unsigned int y, sfColor color);
-void my_put_square(struct framebuffer *framebuffer, unsigned int size, unsigned int x, unsigned int y, sfColor color);
+void my_draw_square(struct framebuffer *framebuffer, unsigned int size, unsigned int x, unsigned int y, sfColor color);
 void my_put_square_line(struct framebuffer *framebuffer, unsigned int size, unsigned int quantity, unsigned int x,
                         unsigned int y, sfColor leftColor, sfColor rightColor);
 void my_put_square_matrix(struct framebuffer *framebuffer, unsigned int squareSize, unsigned int matrixSize,

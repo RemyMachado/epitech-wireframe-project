@@ -36,7 +36,7 @@ void my_put_rect(struct framebuffer *framebuffer, unsigned int width, unsigned i
     }
 }
 
-void my_put_square(struct framebuffer *framebuffer, unsigned int size, unsigned int x, unsigned int y, sfColor color) {
+void my_draw_square(struct framebuffer *framebuffer, unsigned int size, unsigned int x, unsigned int y, sfColor color) {
     my_put_rect(framebuffer, size, size, x, y, color);
 }
 
@@ -55,7 +55,7 @@ void my_put_square_line(struct framebuffer *framebuffer, unsigned int size, unsi
 
         sfColor newColor = {newLeftR + newRightR, newLeftG + newRightG, newLeftB + newRightB, newLeftA + newRightA};
 
-        my_put_square(framebuffer, size, x + i * size, y, newColor);
+        my_draw_square(framebuffer, size, x + i * size, y, newColor);
     }
 }
 

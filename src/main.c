@@ -22,6 +22,8 @@ const unsigned int WINDOW_HEIGHT = 1080;
 const unsigned int WINDOW_BITS_PER_PIXEL = 32;
 const unsigned int FRAMERATE_LIMIT = 300;// TODO: 30
 
+// TODO: wireframe bootstrap when understanding sin, cos, tan & rotation matrices
+// https://intra.epitech.eu/module/2016/B-MUL-100/PAR-1-5/#!/all/Bootstrap-3-Bootstrap-Wireframe
 int main() {
     sfVideoMode videoMode = {WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BITS_PER_PIXEL};
     sfRenderWindow *window;
@@ -57,60 +59,8 @@ int main() {
             }
         }
 
-        sfVector2f start_pos = {framebuffer->width / 2 - 200, framebuffer->height / 2};
-        sfVector2f end_pos = {framebuffer->width / 2 + 200, framebuffer->height / 2};
-        my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
-
-        start_pos.x = framebuffer->width / 2 - 200;
-        start_pos.y = framebuffer->height / 2;
-        end_pos.x = framebuffer->width / 2 - 200;
-        end_pos.y = framebuffer->height / 2 + 200;
-        my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
-
-        start_pos.x = framebuffer->width / 2 + 200;
-        start_pos.y = framebuffer->height / 2;
-        end_pos.x = framebuffer->width / 2 + 200;
-        end_pos.y = framebuffer->height / 2 + 200;
-        my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
-
-        start_pos.x = framebuffer->width / 2 - 200;
-        start_pos.y = framebuffer->height / 2 + 200;
-        end_pos.x = framebuffer->width / 2 + 200;
-        end_pos.y = framebuffer->height / 2 + 200;
-        my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
-
-
-        /*
-         * PARALLEL PROJECTION
-         * */
-        float projection_angle_deg = 30;
-        start_pos.x = framebuffer->width / 2 - 200;
-        start_pos.y = framebuffer->height / 2;
-        end_pos.x = framebuffer->width / 2 + 200;
-        end_pos.y = framebuffer->height / 2;
-        my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
-                     my_parallel_projection(end_pos, projection_angle_deg), sfRed);
-
-        start_pos.x = framebuffer->width / 2 - 200;
-        start_pos.y = framebuffer->height / 2;
-        end_pos.x = framebuffer->width / 2 - 200;
-        end_pos.y = framebuffer->height / 2 + 200;
-        my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
-                     my_parallel_projection(end_pos, projection_angle_deg), sfRed);
-
-        start_pos.x = framebuffer->width / 2 + 200;
-        start_pos.y = framebuffer->height / 2;
-        end_pos.x = framebuffer->width / 2 + 200;
-        end_pos.y = framebuffer->height / 2 + 200;
-        my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
-                     my_parallel_projection(end_pos, projection_angle_deg), sfRed);
-
-        start_pos.x = framebuffer->width / 2 - 200;
-        start_pos.y = framebuffer->height / 2 + 200;
-        end_pos.x = framebuffer->width / 2 + 200;
-        end_pos.y = framebuffer->height / 2 + 200;
-        my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
-                     my_parallel_projection(end_pos, projection_angle_deg), sfRed);
+        /* Draw here */
+        isometric_projection_test(framebuffer);
 
         /* Update the texture from the pixels array of the framebuffer */
         sfTexture_updateFromPixels(texture, framebuffer->pixels, framebuffer->width, framebuffer->height, 0, 0);
