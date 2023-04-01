@@ -1,4 +1,5 @@
 #include "draw.h"
+#include "projections.h"
 #include <SFML/Graphics.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,20 +57,60 @@ int main() {
             }
         }
 
-        /* Draw the pixel at (100,100) in the framebuffer */
-        //        my_put_pixel(framebuffer, 100, 100, sfRed);
-        //        my_put_square(framebuffer, 300, 500, 200, sfRed);
-        //        my_put_square_line(framebuffer, 150, 10, 0, 0, sfRed, sfBlue);
-        //        my_put_square_matrix(framebuffer, 90, 10, 0, 0, sfRed, sfBlue, sfCyan, sfYellow);
-        //        my_put_square_matrix(framebuffer, 18, 50, 0, 0, sfRed, sfBlue, sfCyan, sfYellow);
-        //        my_put_square_matrix(framebuffer, 9, 100, 0, 0, sfRed, sfBlue, sfCyan, sfYellow);
-        my_put_rect(framebuffer, framebuffer->width / 2, framebuffer->height / 2, 0, 0, sfBlue);
-        my_put_rect(framebuffer, framebuffer->width / 2, framebuffer->height / 2, framebuffer->width / 2, 0, sfRed);
-        my_put_rect(framebuffer, framebuffer->width / 2, framebuffer->height / 2, 0, framebuffer->height / 2, sfGreen);
-        my_put_rect(framebuffer, framebuffer->width / 2, framebuffer->height / 2, framebuffer->width / 2,
-                    framebuffer->height / 2, sfCyan);
-        my_draw_line(framebuffer, (sfVector2f){framebuffer->width / 2 + 200, framebuffer->height / 2 - 200},
-                     (sfVector2f){framebuffer->width / 2 - 200, framebuffer->height / 2 + 200}, sfWhite);
+        sfVector2f start_pos = {framebuffer->width / 2 - 200, framebuffer->height / 2};
+        sfVector2f end_pos = {framebuffer->width / 2 + 200, framebuffer->height / 2};
+        my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
+
+        start_pos.x = framebuffer->width / 2 - 200;
+        start_pos.y = framebuffer->height / 2;
+        end_pos.x = framebuffer->width / 2 - 200;
+        end_pos.y = framebuffer->height / 2 + 200;
+        my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
+
+        start_pos.x = framebuffer->width / 2 + 200;
+        start_pos.y = framebuffer->height / 2;
+        end_pos.x = framebuffer->width / 2 + 200;
+        end_pos.y = framebuffer->height / 2 + 200;
+        my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
+
+        start_pos.x = framebuffer->width / 2 - 200;
+        start_pos.y = framebuffer->height / 2 + 200;
+        end_pos.x = framebuffer->width / 2 + 200;
+        end_pos.y = framebuffer->height / 2 + 200;
+        my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
+
+
+        /*
+         * PARALLEL PROJECTION
+         * */
+        float projection_angle_deg = 30;
+        start_pos.x = framebuffer->width / 2 - 200;
+        start_pos.y = framebuffer->height / 2;
+        end_pos.x = framebuffer->width / 2 + 200;
+        end_pos.y = framebuffer->height / 2;
+        my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
+                     my_parallel_projection(end_pos, projection_angle_deg), sfRed);
+
+        start_pos.x = framebuffer->width / 2 - 200;
+        start_pos.y = framebuffer->height / 2;
+        end_pos.x = framebuffer->width / 2 - 200;
+        end_pos.y = framebuffer->height / 2 + 200;
+        my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
+                     my_parallel_projection(end_pos, projection_angle_deg), sfRed);
+
+        start_pos.x = framebuffer->width / 2 + 200;
+        start_pos.y = framebuffer->height / 2;
+        end_pos.x = framebuffer->width / 2 + 200;
+        end_pos.y = framebuffer->height / 2 + 200;
+        my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
+                     my_parallel_projection(end_pos, projection_angle_deg), sfRed);
+
+        start_pos.x = framebuffer->width / 2 - 200;
+        start_pos.y = framebuffer->height / 2 + 200;
+        end_pos.x = framebuffer->width / 2 + 200;
+        end_pos.y = framebuffer->height / 2 + 200;
+        my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
+                     my_parallel_projection(end_pos, projection_angle_deg), sfRed);
 
         /* Update the texture from the pixels array of the framebuffer */
         sfTexture_updateFromPixels(texture, framebuffer->pixels, framebuffer->width, framebuffer->height, 0, 0);
