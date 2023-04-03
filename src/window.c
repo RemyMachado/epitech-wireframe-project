@@ -11,7 +11,7 @@ const int WINDOW_HEIGHT = 1080;
 const int WINDOW_BITS_PER_PIXEL = 32;
 const int FRAMERATE_LIMIT = 300;// TODO: 30
 
-int run_window_loop() {
+int run_window_loop(struct Grid *grid) {
     sfVideoMode videoMode = {WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BITS_PER_PIXEL};
     sfRenderWindow *window;
     struct framebuffer *framebuffer;
@@ -47,7 +47,9 @@ int run_window_loop() {
         }
 
         /* Draw here */
-        isometric_projection_test(framebuffer);
+        //        isometric_projection_test(framebuffer);
+        draw_ground(framebuffer, grid, (sfVector2f){800, 200}, 60, sfWhite);
+        //        my_draw_line(framebuffer, (sfVector2f){500, 500}, (sfVector2f){600, 600}, sfWhite);
 
         /* Update the texture from the pixels array of the framebuffer */
         sfTexture_updateFromPixels(texture, framebuffer->pixels, framebuffer->width, framebuffer->height, 0, 0);

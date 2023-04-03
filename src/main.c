@@ -1,6 +1,7 @@
 #include "draw.h"
 #include "projections.h"
 #include "window.h"
+#include "wireframe.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -42,11 +43,20 @@ void count_rows_cols(const char *filename, int *rows, int *cols) {
     fclose(file);
 }
 
-int **init_grid(const char *filename, int rows, int cols) {
+struct Grid *init_grid(const char *filename, int rows, int cols) {
     FILE *file;
-    int row, col;
-    // Allocate memory for the grid
-    int **grid = (int **) malloc(rows * sizeof(int *));
+    // Allocate memory for the grid...
+    // ...struct
+    struct Grid *grid = (struct Grid *) malloc(sizeof(struct Grid));
+    grid->rows = rows;
+    grid->cols = cols;
+    // ...rows
+    grid->values = (int **) malloc(rows * sizeof(int *));
+    // ...columns
+    for (int row = 0; row < grid->rows; row++) {
+        grid->values[row] = (int *) malloc(cols * sizeof(int));
+    }
+
 
     file = fopen(filename, "r");
     if (file == NULL) {
@@ -54,16 +64,11 @@ int **init_grid(const char *filename, int rows, int cols) {
         exit(EXIT_FAILURE);
     }
 
-    // allocate columns memory
-    for (row = 0; row < rows; row++) {
-        grid[row] = (int *) malloc(cols * sizeof(int));
-    }
-
     // Read the values into the grid
-    for (row = 0; row < rows; row++) {
-        for (col = 0; col < cols; col++) {
-            fscanf(file, "%d", &grid[row][col]);
-            if (col != cols - 1) {
+    for (int row = 0; row < grid->rows; row++) {
+        for (int col = 0; col < grid->cols; col++) {
+            fscanf(file, "%d", &grid->values[row][col]);
+            if (col != grid->cols - 1) {
                 fscanf(file, ",");
             }
         }
@@ -74,18 +79,19 @@ int **init_grid(const char *filename, int rows, int cols) {
     return grid;
 }
 
-void free_grid(int **grid, int rows) {
+void free_grid(struct Grid *grid) {
     int row;
 
-    for (row = 0; row < rows; row++) {
-        free(grid[row]);
+    for (row = 0; row < grid->rows; row++) {
+        free(grid->values[row]);
     }
+    free(grid->values);
     free(grid);
 }
 
 int main(int argc, char **argv) {
     int row, col, rows, cols;
-    int **grid;
+    struct Grid *grid;
 
     if (argc < 2) {
         printf("Usage: %s <filename>\n", argv[0]);
@@ -98,14 +104,14 @@ int main(int argc, char **argv) {
     // Output the grid
     for (row = 0; row < rows; row++) {
         for (col = 0; col < cols; col++) {
-            printf("%d ", grid[row][col]);
+            printf("%d ", grid->values[row][col]);
         }
         printf("\n");
     }
 
-    run_window_loop();
+    run_window_loop(grid);
 
-    free_grid(grid, rows);
+    free_grid(grid);
 
     return EXIT_SUCCESS;
 }
