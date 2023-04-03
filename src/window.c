@@ -50,8 +50,9 @@ int run_window_loop(struct Grid *grid) {
         //        parallel_projection_test(framebuffer);
         sfVector3f start_pos = {800, 500, 0};
 
-        draw_ground(framebuffer, grid, start_pos, 60, sfWhite);
-        draw_vertices(framebuffer, grid, start_pos, 60, sfRed);
+        draw_ground(framebuffer, grid, start_pos, (sfColor){255, 255, 255, 120});
+        draw_vertices(framebuffer, grid, start_pos, sfWhite);
+        draw_roof(framebuffer, grid, start_pos, sfWhite);
         //        my_draw_line(framebuffer, (sfVector2f){500, 500}, (sfVector2f){600, 600}, sfWhite);
 
         /* Update the texture from the pixels array of the framebuffer */
