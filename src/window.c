@@ -18,6 +18,7 @@ int run_window_loop(struct Grid *grid) {
     sfTexture *texture;
     sfSprite *sprite;
     sfEvent event;
+    int loop_count = 0;
 
     window = sfRenderWindow_create(videoMode, WINDOW_TITLE, sfClose | sfResize, NULL);
     if (!window) return EXIT_FAILURE;
@@ -38,11 +39,31 @@ int run_window_loop(struct Grid *grid) {
     sfRenderWindow_setFramerateLimit(window, FRAMERATE_LIMIT);
 
     while (sfRenderWindow_isOpen(window)) {
-        sfRenderWindow_display(window);
+        /* Clear pixels framebuffer */
+        clear_framebuffer(framebuffer);
 
         while (sfRenderWindow_pollEvent(window, &event)) {
             if (event.type == sfEvtClosed) {
                 sfRenderWindow_close(window);
+            }
+
+            if (event.type == sfEvtKeyPressed) {
+                if (event.key.code == sfKeyUp) {
+                    printf("the up key was pressed\n");
+                    grid->height_factor += 0.05;
+                }
+                if (event.key.code == sfKeyDown) {
+                    printf("the down key was pressed\n");
+                    grid->height_factor -= 0.05;
+                }
+                if (event.key.code == sfKeyLeft) {
+                    printf("the left key was pressed\n");
+                    grid->square_size -= 1;
+                }
+                if (event.key.code == sfKeyRight) {
+                    printf("the right key was pressed\n");
+                    grid->square_size += 1;
+                }
             }
         }
 
@@ -66,6 +87,7 @@ int run_window_loop(struct Grid *grid) {
 
         /* Update the window */
         sfRenderWindow_display(window);
+        loop_count += 1;
     }
 
     /* Cleanup resources */

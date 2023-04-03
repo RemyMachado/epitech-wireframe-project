@@ -11,6 +11,7 @@ struct framebuffer {
 };
 
 struct framebuffer *framebuffer_create(int width, int height);
+void clear_framebuffer(struct framebuffer *framebuffer);
 void framebuffer_destroy(struct framebuffer *framebuffer);
 bool is_in_bounds(struct framebuffer *framebuffer, int x, int y);
 

@@ -2,6 +2,7 @@
 #include <SFML/Graphics.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>// for memset
 
 struct framebuffer *framebuffer_create(int width, int height) {
     struct framebuffer *framebuffer = malloc(sizeof(struct framebuffer));
@@ -13,8 +14,21 @@ struct framebuffer *framebuffer_create(int width, int height) {
     return framebuffer;
 }
 
+void clear_framebuffer(struct framebuffer *framebuffer) {
+    if (framebuffer && framebuffer->pixels) {
+        // Clear pixels to transparent black (0, 0, 0, 0)
+        memset(framebuffer->pixels, 0,
+               sizeof(sfUint8) * 4 * framebuffer->width * framebuffer->height);// 1byte * 4 -> RGBA
+    }
+}
+
 void framebuffer_destroy(struct framebuffer *framebuffer) {
-    free(framebuffer);
+    if (framebuffer) {
+        if (framebuffer->pixels) {
+            free(framebuffer->pixels);
+        }
+        free(framebuffer);
+    }
 }
 
 bool is_in_bounds(struct framebuffer *framebuffer, int x, int y) {

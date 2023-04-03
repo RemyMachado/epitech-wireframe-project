@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
     // print the number of rows and columns
     printf("rows: %d, cols: %d\n", rows, cols);
 
-    grid = init_grid(argv[1], rows, cols, 50, 0.1, 45);
+    grid = init_grid(argv[1], rows, cols, 50, 0.5, 45);
 
     // Output the grid
     for (row = 0; row < rows; row++) {
