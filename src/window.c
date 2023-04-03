@@ -48,14 +48,16 @@ int run_window_loop(struct Grid *grid) {
             }
 
             if (event.type == sfEvtKeyPressed) {
-                if (event.key.code == sfKeyUp) {
-                    printf("the up key was pressed\n");
-                    grid->height_factor += 0.05;
-                }
                 if (event.key.code == sfKeyDown) {
                     printf("the down key was pressed\n");
                     grid->height_factor -= 0.05;
                 }
+                if (event.key.code == sfKeyUp) {
+                    printf("the up key was pressed\n");
+                    grid->height_factor += 0.05;
+                }
+
+                // TODO: 3D matrix transformation instead for the size
                 if (event.key.code == sfKeyLeft) {
                     printf("the left key was pressed\n");
                     grid->square_size -= 1;
@@ -64,16 +66,33 @@ int run_window_loop(struct Grid *grid) {
                     printf("the right key was pressed\n");
                     grid->square_size += 1;
                 }
+                // TODO: 3D matrix transformation for rotation
+
+                // TODO: move terrain in 3 axes (move start_pos)
+                if (event.key.code == sfKeyA) {
+                    printf("the 'A' key was pressed\n");
+                    grid->pos.x -= 10;
+                }
+                if (event.key.code == sfKeyD) {
+                    printf("the 'D' key was pressed\n");
+                    grid->pos.x += 10;
+                }
+                if (event.key.code == sfKeyS) {
+                    printf("the 'S' key was pressed\n");
+                    grid->pos.z -= 10;
+                }
+                if (event.key.code == sfKeyW) {
+                    printf("the 'W' key was pressed\n");
+                    grid->pos.z += 10;
+                }
             }
         }
 
         /* Draw here */
         //        parallel_projection_test(framebuffer);
-        sfVector3f start_pos = {800, 500, 0};
-
-        draw_ground(framebuffer, grid, start_pos, (sfColor){255, 255, 255, 120});
-        draw_vertices(framebuffer, grid, start_pos, sfWhite);
-        draw_roof(framebuffer, grid, start_pos, sfWhite);
+        draw_ground(framebuffer, grid, (sfColor){255, 255, 255, 120});
+        draw_vertices(framebuffer, grid, sfWhite);
+        draw_roof(framebuffer, grid, sfWhite);
         //        my_draw_line(framebuffer, (sfVector2f){500, 500}, (sfVector2f){600, 600}, sfWhite);
 
         /* Update the texture from the pixels array of the framebuffer */

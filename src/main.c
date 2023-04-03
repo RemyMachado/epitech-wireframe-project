@@ -44,7 +44,7 @@ void count_rows_cols(const char *filename, int *rows, int *cols) {
 }
 
 struct Grid *init_grid(const char *filename, int rows, int cols, float square_size, float height_factor,
-                       float parallel_angle_deg) {
+                       float parallel_angle_deg, sfVector3f pos) {
     FILE *file;
     // Allocate memory for the grid...
     // ...struct
@@ -54,6 +54,7 @@ struct Grid *init_grid(const char *filename, int rows, int cols, float square_si
     grid->square_size = square_size;
     grid->height_factor = height_factor;
     grid->parallel_angle_deg = parallel_angle_deg;
+    grid->pos = pos;
     // ...rows
     grid->values = (int **) malloc(rows * sizeof(int *));
     // ...columns
@@ -106,7 +107,7 @@ int main(int argc, char **argv) {
     // print the number of rows and columns
     printf("rows: %d, cols: %d\n", rows, cols);
 
-    grid = init_grid(argv[1], rows, cols, 50, 0.5, 45);
+    grid = init_grid(argv[1], rows, cols, 50, 0.5, 45, (sfVector3f){800, 500, 0});
 
     // Output the grid
     for (row = 0; row < rows; row++) {
