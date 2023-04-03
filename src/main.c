@@ -1,6 +1,6 @@
 #include "draw.h"
 #include "projections.h"
-#include <SFML/Graphics.h>
+#include "window.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,69 +16,96 @@
 
 #endif /* NOMINMAX */
 
-const char *WINDOW_TITLE = "Epitech-Wireframe";
-const unsigned int WINDOW_WIDTH = 1920;
-const unsigned int WINDOW_HEIGHT = 1080;
-const unsigned int WINDOW_BITS_PER_PIXEL = 32;
-const unsigned int FRAMERATE_LIMIT = 300;// TODO: 30
+void count_rows_cols(const char *filename, int *rows, int *cols) {
+    FILE *file;
+    char ch;
+    int temp_cols = 0;
 
-// TODO: wireframe bootstrap when understanding sin, cos, tan & rotation matrices
-// https://intra.epitech.eu/module/2016/B-MUL-100/PAR-1-5/#!/all/Bootstrap-3-Bootstrap-Wireframe
-int main() {
-    sfVideoMode videoMode = {WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BITS_PER_PIXEL};
-    sfRenderWindow *window;
-    struct framebuffer *framebuffer;
-    sfTexture *texture;
-    sfSprite *sprite;
-    sfEvent event;
+    *rows = 0;
+    *cols = -1;
 
-    window = sfRenderWindow_create(videoMode, WINDOW_TITLE, sfClose | sfResize, NULL);
-    if (!window) return EXIT_FAILURE;
-
-    /* Create the framebuffer */
-    framebuffer = framebuffer_create(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-    /* Load a sprite to display (including its texture) */
-    texture = sfTexture_create(framebuffer->width, framebuffer->height);
-    if (!texture) return EXIT_FAILURE;
-
-    sprite = sfSprite_create();
-
-    /* Link the texture to the sprite */
-    sfSprite_setTexture(sprite, texture, sfTrue);
-
-    /* Limit the window framerate */
-    sfRenderWindow_setFramerateLimit(window, FRAMERATE_LIMIT);
-
-    while (sfRenderWindow_isOpen(window)) {
-        sfRenderWindow_display(window);
-
-        while (sfRenderWindow_pollEvent(window, &event)) {
-            if (event.type == sfEvtClosed) {
-                sfRenderWindow_close(window);
-            }
-        }
-
-        /* Draw here */
-        isometric_projection_test(framebuffer);
-
-        /* Update the texture from the pixels array of the framebuffer */
-        sfTexture_updateFromPixels(texture, framebuffer->pixels, framebuffer->width, framebuffer->height, 0, 0);
-
-        /* Clear the screen */
-        sfRenderWindow_clear(window, sfBlack);
-
-        /* Draw the sprite */
-        sfRenderWindow_drawSprite(window, sprite, NULL);
-
-        /* Update the window */
-        sfRenderWindow_display(window);
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Error: Unable to open the file \"%s\".\n", filename);
+        exit(EXIT_FAILURE);
     }
 
-    /* Cleanup resources */
-    framebuffer_destroy(framebuffer);
-    sfSprite_destroy(sprite);
-    sfTexture_destroy(texture);
-    sfRenderWindow_destroy(window);
+    while ((ch = fgetc(file)) != EOF) {
+        if (ch == ',' && *cols == -1) {
+            temp_cols++;// will only compute the first row
+        } else if (ch == '\n') {
+            *rows += 1;
+            *cols = temp_cols + 1;
+        }
+    }
+
+    fclose(file);
+}
+
+int **init_grid(const char *filename, int rows, int cols) {
+    FILE *file;
+    int row, col;
+    // Allocate memory for the grid
+    int **grid = (int **) malloc(rows * sizeof(int *));
+
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Error: Unable to open the file \"%s\".\n", filename);
+        exit(EXIT_FAILURE);
+    }
+
+    // allocate columns memory
+    for (row = 0; row < rows; row++) {
+        grid[row] = (int *) malloc(cols * sizeof(int));
+    }
+
+    // Read the values into the grid
+    for (row = 0; row < rows; row++) {
+        for (col = 0; col < cols; col++) {
+            fscanf(file, "%d", &grid[row][col]);
+            if (col != cols - 1) {
+                fscanf(file, ",");
+            }
+        }
+    }
+
+    fclose(file);
+
+    return grid;
+}
+
+void free_grid(int **grid, int rows) {
+    int row;
+
+    for (row = 0; row < rows; row++) {
+        free(grid[row]);
+    }
+    free(grid);
+}
+
+int main(int argc, char **argv) {
+    int row, col, rows, cols;
+    int **grid;
+
+    if (argc < 2) {
+        printf("Usage: %s <filename>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    count_rows_cols(argv[1], &rows, &cols);
+    grid = init_grid(argv[1], rows, cols);
+
+    // Output the grid
+    for (row = 0; row < rows; row++) {
+        for (col = 0; col < cols; col++) {
+            printf("%d ", grid[row][col]);
+        }
+        printf("\n");
+    }
+
+    run_window_loop();
+
+    free_grid(grid, rows);
+
     return EXIT_SUCCESS;
 }

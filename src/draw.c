@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-struct framebuffer *framebuffer_create(unsigned int width, unsigned int height) {
+struct framebuffer *framebuffer_create(int width, int height) {
     struct framebuffer *framebuffer = malloc(sizeof(struct framebuffer));
 
     framebuffer->width = width;
@@ -17,9 +17,15 @@ void framebuffer_destroy(struct framebuffer *framebuffer) {
     free(framebuffer);
 }
 
+bool is_in_bounds(struct framebuffer *framebuffer, int x, int y) {
+    return x >= 0 && x < framebuffer->width && y >= 0 && y < framebuffer->height;
+}
+
 // TODO: consider adding a guard to prevent x,y overflow
-void my_put_pixel(struct framebuffer *framebuffer, unsigned int x, unsigned int y, sfColor color) {
+void my_put_pixel(struct framebuffer *framebuffer, int x, int y, sfColor color) {
     const int index = (y * framebuffer->width) * 4 + x * 4;
+
+    if (!is_in_bounds(framebuffer, x, y)) return;
 
     framebuffer->pixels[index] = color.r;
     framebuffer->pixels[index + 1] = color.g;
@@ -27,22 +33,21 @@ void my_put_pixel(struct framebuffer *framebuffer, unsigned int x, unsigned int 
     framebuffer->pixels[index + 3] = color.a;
 }
 
-void my_put_rect(struct framebuffer *framebuffer, unsigned int width, unsigned int height, unsigned int x,
-                 unsigned int y, sfColor color) {
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
+void my_put_rect(struct framebuffer *framebuffer, int width, int height, int x, int y, sfColor color) {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
             my_put_pixel(framebuffer, x + j, y + i, color);
         }
     }
 }
 
-void my_draw_square(struct framebuffer *framebuffer, unsigned int size, unsigned int x, unsigned int y, sfColor color) {
+void my_draw_square(struct framebuffer *framebuffer, int size, int x, int y, sfColor color) {
     my_put_rect(framebuffer, size, size, x, y, color);
 }
 
-void my_put_square_line(struct framebuffer *framebuffer, unsigned int size, unsigned int quantity, unsigned int x,
-                        unsigned int y, sfColor leftColor, sfColor rightColor) {
-    for (unsigned int i = 0; i < quantity; ++i) {
+void my_put_square_line(struct framebuffer *framebuffer, int size, int quantity, int x, int y, sfColor leftColor,
+                        sfColor rightColor) {
+    for (int i = 0; i < quantity; ++i) {
         sfUint8 newLeftR = leftColor.r - leftColor.r / quantity * i;
         sfUint8 newLeftG = leftColor.g - leftColor.g / quantity * i;
         sfUint8 newLeftB = leftColor.b - leftColor.b / quantity * i;
@@ -59,10 +64,10 @@ void my_put_square_line(struct framebuffer *framebuffer, unsigned int size, unsi
     }
 }
 
-void my_put_square_matrix(struct framebuffer *framebuffer, unsigned int squareSize, unsigned int matrixSize,
-                          unsigned int x, unsigned int y, sfColor topLeftColor, sfColor topRightColor,
-                          sfColor bottomRightColor, sfColor bottomLeftColor) {
-    for (unsigned int i = 0; i < matrixSize; ++i) {
+void my_put_square_matrix(struct framebuffer *framebuffer, int squareSize, int matrixSize, int x, int y,
+                          sfColor topLeftColor, sfColor topRightColor, sfColor bottomRightColor,
+                          sfColor bottomLeftColor) {
+    for (int i = 0; i < matrixSize; ++i) {
         sfUint8 newTopLeftR = topLeftColor.r - topLeftColor.r / matrixSize * i;
         sfUint8 newTopLeftG = topLeftColor.g - topLeftColor.g / matrixSize * i;
         sfUint8 newTopLeftB = topLeftColor.b - topLeftColor.b / matrixSize * i;
