@@ -18,9 +18,10 @@ sfVector2f my_parallel_projection(sfVector3f pos3d, float angle_deg) {
     float new_y = pos3d.y - pos3d.z;
 
     sfVector2f new_pos2f = {new_x, new_y};
+
     // print pos3d and new_pos2f
-    printf("\n_______\npos3d: (%f, %f, %f)\n", pos3d.x, pos3d.y, pos3d.z);
-    printf("new_pos2f: (%f, %f)\n", new_pos2f.x, new_pos2f.y);
+    //    printf("\n_______\npos3d: (%f, %f, %f)\n", pos3d.x, pos3d.y, pos3d.z);
+    //    printf("new_pos2f: (%f, %f)\n", new_pos2f.x, new_pos2f.y);
 
     return new_pos2f;
 }

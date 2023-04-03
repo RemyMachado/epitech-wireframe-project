@@ -36,7 +36,7 @@ void count_rows_cols(const char *filename, int *rows, int *cols) {
             temp_cols++;// will only compute the first row
         } else if (ch == '\n') {
             *rows += 1;
-            *cols = temp_cols + 1;
+            *cols = temp_cols;
         }
     }
 
@@ -68,10 +68,9 @@ struct Grid *init_grid(const char *filename, int rows, int cols) {
     for (int row = 0; row < grid->rows; row++) {
         for (int col = 0; col < grid->cols; col++) {
             fscanf(file, "%d", &grid->values[row][col]);
-            if (col != grid->cols - 1) {
-                fscanf(file, ",");
-            }
+            fscanf(file, ",");
         }
+        fscanf(file, "\n");
     }
 
     fclose(file);
@@ -99,6 +98,10 @@ int main(int argc, char **argv) {
     }
 
     count_rows_cols(argv[1], &rows, &cols);
+
+    // print the number of rows and columns
+    printf("rows: %d, cols: %d\n", rows, cols);
+
     grid = init_grid(argv[1], rows, cols);
 
     // Output the grid

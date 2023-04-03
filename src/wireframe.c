@@ -10,13 +10,30 @@ void draw_parallel_ground_line(struct framebuffer *framebuffer, sfVector3f start
                  my_parallel_projection(end_pos, angle_degree), color);
 }
 
+void draw_vertices(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f pos, int unit_size, sfColor color) {
+    sfVector3f start_pos = {0, 0, 0};
+    sfVector3f end_pos = {0, 0, 0};
+
+    for (int i = 0; i < grid->rows; i++) {
+        for (int j = 0; j < grid->cols; j++) {
+            start_pos.x = pos.x + j * unit_size;
+            start_pos.y = pos.y + i * unit_size;
+            start_pos.z = 0;
+            end_pos.x = pos.x + j * unit_size;
+            end_pos.y = pos.y + i * unit_size;
+            end_pos.z = grid->values[i][j] * unit_size;
+            draw_parallel_ground_line(framebuffer, start_pos, end_pos, color);
+        }
+    }
+}
+
 void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f pos, int unit_size, sfColor color) {
     sfVector3f start_pos = {0, 0, 0};
     sfVector3f end_pos = {0, 0, 0};
 
     // draw a grid with horizontal lines and vertical lines
-    for (int i = 0; i < grid->rows; i++) {
-        for (int j = 0; j < grid->cols; j++) {
+    for (int i = 0; i < grid->rows - 1; i++) {
+        for (int j = 0; j < grid->cols - 1; j++) {
             // top horizontal line
             start_pos.x = pos.x + j * unit_size;
             start_pos.y = pos.y + i * unit_size;
@@ -32,7 +49,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f 
             draw_parallel_ground_line(framebuffer, start_pos, end_pos, color);
 
             // bottom horizontal line
-            if (i == grid->rows - 1) {
+            if (i == grid->rows - 2) {
                 start_pos.x = pos.x + j * unit_size;
                 start_pos.y = pos.y + (i + 1) * unit_size;
                 end_pos.x = pos.x + (j + 1) * unit_size;
@@ -40,7 +57,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f 
                 draw_parallel_ground_line(framebuffer, start_pos, end_pos, color);
             }
             // right vertical line
-            if (j == grid->cols - 1) {
+            if (j == grid->cols - 2) {
                 start_pos.x = pos.x + (j + 1) * unit_size;
                 start_pos.y = pos.y + i * unit_size;
                 end_pos.x = pos.x + (j + 1) * unit_size;

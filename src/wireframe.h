@@ -10,5 +10,6 @@ struct Grid {
 };
 
 void draw_ground(struct framebuffer *framebuffer, struct Grid *, sfVector3f pos, int unit_size, sfColor color);
+void draw_vertices(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f pos, int unit_size, sfColor color);
 
 #endif//EPITECH_WIREFRAME_PROJECT_WIREFRAME_H
