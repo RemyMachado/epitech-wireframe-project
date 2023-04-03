@@ -2,16 +2,17 @@
 #include "projections.h"
 #include "stdio.h"
 
-void draw_parallel_ground_line(struct framebuffer *framebuffer, sfVector2f start_pos, sfVector2f end_pos,
+void draw_parallel_ground_line(struct framebuffer *framebuffer, sfVector3f start_pos, sfVector3f end_pos,
                                sfColor color) {
     int angle_degree = 45;
 
-    my_draw_line(framebuffer, my_parallel_projection(start_pos, angle_degree), my_parallel_projection(end_pos, angle_degree), color);
+    my_draw_line(framebuffer, my_parallel_projection(start_pos, angle_degree),
+                 my_parallel_projection(end_pos, angle_degree), color);
 }
 
-void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfVector2f pos, int unit_size, sfColor color) {
-    sfVector2f start_pos = {0, 0};
-    sfVector2f end_pos = {0, 0};
+void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f pos, int unit_size, sfColor color) {
+    sfVector3f start_pos = {0, 0, 0};
+    sfVector3f end_pos = {0, 0, 0};
 
     // draw a grid with horizontal lines and vertical lines
     for (int i = 0; i < grid->rows; i++) {

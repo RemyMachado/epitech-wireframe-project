@@ -47,8 +47,8 @@ int run_window_loop(struct Grid *grid) {
         }
 
         /* Draw here */
-        //        isometric_projection_test(framebuffer);
-        draw_ground(framebuffer, grid, (sfVector2f){800, 200}, 60, sfWhite);
+        //        parallel_projection_test(framebuffer);
+        draw_ground(framebuffer, grid, (sfVector3f){800, 200, 0}, 60, sfWhite);
         //        my_draw_line(framebuffer, (sfVector2f){500, 500}, (sfVector2f){600, 600}, sfWhite);
 
         /* Update the texture from the pixels array of the framebuffer */

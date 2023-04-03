@@ -1,6 +1,7 @@
 #include "projections.h"
 #include "my_math.h"
 #include <math.h>
+#include <stdio.h>
 
 // converts a 3D point to a 2D point using the parallel projection
 // (angle is in degree):
@@ -9,73 +10,101 @@
 /*
  *
  * Transformation matrix:
- * [1][cos(A)]
- * [0][  1   ]
+ * [1][cos(A)][0]
+ * [0][  1   ][-1]
  * */
-sfVector2f my_parallel_projection(sfVector2f pos2d, float angle_deg) {
-    float new_x = pos2d.x + pos2d.y * cos(degrees_to_radians(angle_deg + 90));
-    float new_y = pos2d.y;
+sfVector2f my_parallel_projection(sfVector3f pos3d, float angle_deg) {
+    float new_x = pos3d.x + pos3d.y * cos(degrees_to_radians(angle_deg + 90));
+    float new_y = pos3d.y - pos3d.z;
 
     sfVector2f new_pos2f = {new_x, new_y};
+    // print pos3d and new_pos2f
+    printf("\n_______\npos3d: (%f, %f, %f)\n", pos3d.x, pos3d.y, pos3d.z);
+    printf("new_pos2f: (%f, %f)\n", new_pos2f.x, new_pos2f.y);
 
     return new_pos2f;
 }
 
 void parallel_projection_test(struct framebuffer *framebuffer) {
-    sfVector2f start_pos = {framebuffer->width / 2 - 200, framebuffer->height / 2};
-    sfVector2f end_pos = {framebuffer->width / 2 + 200, framebuffer->height / 2};
-    my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
+    sfVector3f initial_pos = {500, 500, 0};
+    sfVector3f start_pos = {initial_pos.x, initial_pos.y, initial_pos.z};
+    sfVector3f end_pos = {initial_pos.x, initial_pos.y, initial_pos.z};
 
-    start_pos.x = framebuffer->width / 2 - 200;
-    start_pos.y = framebuffer->height / 2;
-    end_pos.x = framebuffer->width / 2 - 200;
-    end_pos.y = framebuffer->height / 2 + 200;
-    my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
+    // top horizontal line
+    start_pos.x = initial_pos.x;
+    start_pos.y = initial_pos.y;
+    end_pos.x = initial_pos.x + 200;
+    end_pos.y = initial_pos.y;
+    my_draw_line(framebuffer, (sfVector2f){start_pos.x, start_pos.y}, (sfVector2f){end_pos.x, end_pos.y}, sfWhite);
 
-    start_pos.x = framebuffer->width / 2 + 200;
-    start_pos.y = framebuffer->height / 2;
-    end_pos.x = framebuffer->width / 2 + 200;
-    end_pos.y = framebuffer->height / 2 + 200;
-    my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
+    // left vertical line
+    start_pos.x = initial_pos.x;
+    start_pos.y = initial_pos.y;
+    end_pos.x = initial_pos.x;
+    end_pos.y = initial_pos.y + 200;
+    my_draw_line(framebuffer, (sfVector2f){start_pos.x, start_pos.y}, (sfVector2f){end_pos.x, end_pos.y}, sfWhite);
 
-    start_pos.x = framebuffer->width / 2 - 200;
-    start_pos.y = framebuffer->height / 2 + 200;
-    end_pos.x = framebuffer->width / 2 + 200;
-    end_pos.y = framebuffer->height / 2 + 200;
-    my_draw_line(framebuffer, start_pos, end_pos, sfWhite);
+    // right vertical line
+    start_pos.x = initial_pos.x + 200;
+    start_pos.y = initial_pos.y;
+    end_pos.x = initial_pos.x + 200;
+    end_pos.y = initial_pos.y + 200;
+    my_draw_line(framebuffer, (sfVector2f){start_pos.x, start_pos.y}, (sfVector2f){end_pos.x, end_pos.y}, sfWhite);
+
+    // bottom horizontal line
+    start_pos.x = initial_pos.x;
+    start_pos.y = initial_pos.y + 200;
+    end_pos.x = initial_pos.x + 200;
+    end_pos.y = initial_pos.y + 200;
+    my_draw_line(framebuffer, (sfVector2f){start_pos.x, start_pos.y}, (sfVector2f){end_pos.x, end_pos.y}, sfWhite);
 
 
     /*
          * PARALLEL PROJECTION
          * */
     float projection_angle_deg = 30;
-    start_pos.x = framebuffer->width / 2 - 200;
-    start_pos.y = framebuffer->height / 2;
-    end_pos.x = framebuffer->width / 2 + 200;
-    end_pos.y = framebuffer->height / 2;
+
+    // top horizontal line
+    start_pos.x = initial_pos.x;
+    start_pos.y = initial_pos.y;
+    end_pos.x = initial_pos.x + 200;
+    end_pos.y = initial_pos.y;
     my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
                  my_parallel_projection(end_pos, projection_angle_deg), sfRed);
 
-    start_pos.x = framebuffer->width / 2 - 200;
-    start_pos.y = framebuffer->height / 2;
-    end_pos.x = framebuffer->width / 2 - 200;
-    end_pos.y = framebuffer->height / 2 + 200;
+    // left vertical line
+    start_pos.x = initial_pos.x;
+    start_pos.y = initial_pos.y;
+    end_pos.x = initial_pos.x;
+    end_pos.y = initial_pos.y + 200;
     my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
                  my_parallel_projection(end_pos, projection_angle_deg), sfRed);
 
-    start_pos.x = framebuffer->width / 2 + 200;
-    start_pos.y = framebuffer->height / 2;
-    end_pos.x = framebuffer->width / 2 + 200;
-    end_pos.y = framebuffer->height / 2 + 200;
+    // right vertical line
+    start_pos.x = initial_pos.x + 200;
+    start_pos.y = initial_pos.y;
+    end_pos.x = initial_pos.x + 200;
+    end_pos.y = initial_pos.y + 200;
     my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
                  my_parallel_projection(end_pos, projection_angle_deg), sfRed);
 
-    start_pos.x = framebuffer->width / 2 - 200;
-    start_pos.y = framebuffer->height / 2 + 200;
-    end_pos.x = framebuffer->width / 2 + 200;
-    end_pos.y = framebuffer->height / 2 + 200;
+    // bottom horizontal line
+    start_pos.x = initial_pos.x;
+    start_pos.y = initial_pos.y + 200;
+    end_pos.x = initial_pos.x + 200;
+    end_pos.y = initial_pos.y + 200;
     my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
                  my_parallel_projection(end_pos, projection_angle_deg), sfRed);
+
+    // test Z line
+    start_pos.x = initial_pos.x;
+    start_pos.y = initial_pos.y;
+    start_pos.z = 0;
+    end_pos.x = initial_pos.x;
+    end_pos.y = initial_pos.y;
+    end_pos.z = 200;
+    my_draw_line(framebuffer, my_parallel_projection(start_pos, projection_angle_deg),
+                 my_parallel_projection(end_pos, projection_angle_deg), sfGreen);
 }
 
 
