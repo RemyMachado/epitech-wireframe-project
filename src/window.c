@@ -48,42 +48,82 @@ int run_window_loop(struct Grid *grid) {
             }
 
             if (event.type == sfEvtKeyPressed) {
-                if (event.key.code == sfKeyDown) {
-                    printf("the down key was pressed\n");
-                    grid->height_factor -= 0.05;
-                }
-                if (event.key.code == sfKeyUp) {
-                    printf("the up key was pressed\n");
-                    grid->height_factor += 0.05;
-                }
 
-                // TODO: 3D matrix transformation instead for the size
+                /*
+                 * SCALING
+                 * */
+                // X
                 if (event.key.code == sfKeyLeft) {
                     printf("the left key was pressed\n");
-                    grid->square_size -= 1;
+                    grid->cube_scaling_axis_factors.x -= 1;
                 }
                 if (event.key.code == sfKeyRight) {
                     printf("the right key was pressed\n");
-                    grid->square_size += 1;
+                    grid->cube_scaling_axis_factors.x += 1;
                 }
-                // TODO: 3D matrix transformation for rotation
+                // Y
+                if (event.key.code == sfKeyX) {
+                    printf("the 'X' key was pressed\n");
+                    grid->cube_scaling_axis_factors.y -= 1;
+                }
+                if (event.key.code == sfKeyC) {
+                    printf("the 'C' key was pressed\n");
+                    grid->cube_scaling_axis_factors.y += 1;
+                }
+                // Z
+                if (event.key.code == sfKeyDown) {
+                    printf("the down key was pressed\n");
+                    grid->cube_scaling_axis_factors.z -= 1;
+                }
+                if (event.key.code == sfKeyUp) {
+                    printf("the up key was pressed\n");
+                    grid->cube_scaling_axis_factors.z += 1;
+                }
 
-                // TODO: move terrain in 3 axes (move start_pos)
+                /*
+                 * ROTATIONS
+                 * */
+                if (event.key.code == sfKeyV) {
+                    printf("the 'V' key was pressed\n");
+                    grid->rotation_axes_deg.x -= 5;
+                }
+                if (event.key.code == sfKeyB) {
+                    printf("the 'B' key was pressed\n");
+                    grid->rotation_axes_deg.y -= 5;
+                }
+                if (event.key.code == sfKeyN) {
+                    printf("the 'N' key was pressed\n");
+                    grid->rotation_axes_deg.z -= 5;
+                }
+                if (event.key.code == sfKeyF) {
+                    printf("the 'V' key was pressed\n");
+                    grid->rotation_axes_deg.x += 5;
+                }
+                if (event.key.code == sfKeyG) {
+                    printf("the 'B' key was pressed\n");
+                    grid->rotation_axes_deg.y += 5;
+                }
+                if (event.key.code == sfKeyH) {
+                    printf("the 'N' key was pressed\n");
+                    grid->rotation_axes_deg.z += 5;
+                }
+
+                /* TRANSLATIONS */
                 if (event.key.code == sfKeyA) {
                     printf("the 'A' key was pressed\n");
-                    grid->pos.x -= 10;
+                    grid->translation_vector.x -= 10;
                 }
                 if (event.key.code == sfKeyD) {
                     printf("the 'D' key was pressed\n");
-                    grid->pos.x += 10;
+                    grid->translation_vector.x += 10;
                 }
                 if (event.key.code == sfKeyS) {
                     printf("the 'S' key was pressed\n");
-                    grid->pos.z -= 10;
+                    grid->translation_vector.z -= 10;
                 }
                 if (event.key.code == sfKeyW) {
                     printf("the 'W' key was pressed\n");
-                    grid->pos.z += 10;
+                    grid->translation_vector.z += 10;
                 }
             }
         }
