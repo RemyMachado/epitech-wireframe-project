@@ -113,11 +113,8 @@ void my_put_square_matrix(struct framebuffer *framebuffer, int squareSize, int m
     }
 }
 
-// TODO: my_draw_line with a gradient color on the Z axis (height)
-// TODO: rotation around the center of the terrain
 // TODO: isometric projection
 
-// TODO: a function returning the list of points to draw for a line
 /*
  * Array terminated by sentinel point (FLT_MAX, FLT_MAX)
  * */

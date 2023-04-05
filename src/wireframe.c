@@ -4,14 +4,21 @@
 
 /*
  * Apply transformations in the following order:
- * 1) Rotation
+ * 1) Rotation (around the local center)
  * 2) Translation
  *
  * N.B. Scaling is done (before) at local level to not impact the whole 3D space
  * */
 sfVector3f apply_all_transformations_3d(sfVector3f initial_vector, struct Grid *grid) {
+    float grid_size_x = grid->cols * grid->cube_scaling_axis_factors.x;
+    float grid_size_y = grid->rows * grid->cube_scaling_axis_factors.y;
+    float grid_size_z = grid->max_value * grid->cube_scaling_axis_factors.z;
+
+    sfVector3f center = {-1 * (grid_size_x / 2), -1 * (grid_size_y / 2), -1 * (grid_size_z / 2)};
+    sfVector3f centered_initial_vector = apply_translation_3d(initial_vector, center);
+
     /* 1) Rotation */
-    sfVector3f rotated_vector = apply_rotation_3d_deg(initial_vector, grid->rotation_axes_deg);
+    sfVector3f rotated_vector = apply_rotation_3d_deg(centered_initial_vector, grid->rotation_axes_deg);
 
     /* 2) Translation */
     sfVector3f translated_vector = apply_translation_3d(rotated_vector, grid->translation_vector);
