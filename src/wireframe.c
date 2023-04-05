@@ -26,8 +26,8 @@ sfVector3f apply_all_transformations_3d(sfVector3f initial_vector, struct Grid *
     return translated_vector;
 }
 
-void draw_parallel_line(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f start_pos, sfVector3f end_pos,
-                        sfColor from_color, sfColor to_color) {
+void draw_projected_line(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f start_pos, sfVector3f end_pos,
+                         sfColor from_color, sfColor to_color) {
     float max_height = grid->max_value * grid->cube_scaling_axis_factors.z;
 
     sfVector3f transformed_start_pos = apply_all_transformations_3d(start_pos, grid);
@@ -47,8 +47,8 @@ void draw_parallel_line(struct framebuffer *framebuffer, struct Grid *grid, sfVe
                          from_color.b + (to_color.b - from_color.b) * end_ratio,
                          from_color.a + (to_color.a - from_color.a) * end_ratio};
 
-    my_draw_line_gradient(framebuffer, my_parallel_projection(transformed_start_pos, grid->parallel_angle_deg),
-                          my_parallel_projection(transformed_end_pos, grid->parallel_angle_deg), start_color,
+    my_draw_line_gradient(framebuffer, grid->projector_3d_to_2d(transformed_start_pos, grid->parallel_angle_deg),
+                          grid->projector_3d_to_2d(transformed_end_pos, grid->parallel_angle_deg), start_color,
                           end_color);
     //    my_draw_line(framebuffer, my_parallel_projection(transformed_start_pos, grid->parallel_angle_deg),
     //                 my_parallel_projection(transformed_end_pos, grid->parallel_angle_deg), color);
@@ -66,7 +66,7 @@ void draw_vertices(struct framebuffer *framebuffer, struct Grid *grid, sfColor f
             end_pos.x = grid->pos.x + j * grid->cube_scaling_axis_factors.x;
             end_pos.y = grid->pos.y + i * grid->cube_scaling_axis_factors.y;
             end_pos.z = grid->pos.z + grid->values[i][j] * grid->cube_scaling_axis_factors.z;
-            draw_parallel_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
+            draw_projected_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
         }
     }
 }
@@ -86,13 +86,13 @@ void draw_roof(struct framebuffer *framebuffer, struct Grid *grid, sfColor from_
                 end_pos.x = grid->pos.x + (j + 1) * grid->cube_scaling_axis_factors.x;
                 end_pos.y = grid->pos.y + i * grid->cube_scaling_axis_factors.y;
                 end_pos.z = grid->pos.z + grid->values[i][j + 1] * grid->cube_scaling_axis_factors.z;
-                draw_parallel_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
+                draw_projected_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
             }
             if (i != grid->rows - 1) {
                 end_pos.x = grid->pos.x + j * grid->cube_scaling_axis_factors.x;
                 end_pos.y = grid->pos.y + (i + 1) * grid->cube_scaling_axis_factors.y;
                 end_pos.z = grid->pos.z + grid->values[i + 1][j] * grid->cube_scaling_axis_factors.z;
-                draw_parallel_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
+                draw_projected_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
             }
         }
     }
@@ -113,7 +113,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
             end_pos.x = grid->pos.x + (j + 1) * grid->cube_scaling_axis_factors.x;
             end_pos.y = grid->pos.y + i * grid->cube_scaling_axis_factors.y;
             end_pos.z = grid->pos.z;
-            draw_parallel_line(framebuffer, grid, start_pos, end_pos, color, color);
+            draw_projected_line(framebuffer, grid, start_pos, end_pos, color, color);
 
             // left vertical line
             start_pos.x = grid->pos.x + j * grid->cube_scaling_axis_factors.x;
@@ -122,7 +122,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
             end_pos.x = grid->pos.x + j * grid->cube_scaling_axis_factors.x;
             end_pos.y = grid->pos.y + (i + 1) * grid->cube_scaling_axis_factors.y;
             end_pos.z = grid->pos.z;
-            draw_parallel_line(framebuffer, grid, start_pos, end_pos, color, color);
+            draw_projected_line(framebuffer, grid, start_pos, end_pos, color, color);
 
             // bottom horizontal line
             if (i == grid->rows - 2) {
@@ -132,7 +132,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
                 end_pos.x = grid->pos.x + (j + 1) * grid->cube_scaling_axis_factors.x;
                 end_pos.y = grid->pos.y + (i + 1) * grid->cube_scaling_axis_factors.y;
                 end_pos.z = grid->pos.z;
-                draw_parallel_line(framebuffer, grid, start_pos, end_pos, color, color);
+                draw_projected_line(framebuffer, grid, start_pos, end_pos, color, color);
             }
             // right vertical line
             if (j == grid->cols - 2) {
@@ -142,7 +142,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
                 end_pos.x = grid->pos.x + (j + 1) * grid->cube_scaling_axis_factors.x;
                 end_pos.y = grid->pos.y + (i + 1) * grid->cube_scaling_axis_factors.y;
                 end_pos.z = grid->pos.z;
-                draw_parallel_line(framebuffer, grid, start_pos, end_pos, color, color);
+                draw_projected_line(framebuffer, grid, start_pos, end_pos, color, color);
             }
         }
     }

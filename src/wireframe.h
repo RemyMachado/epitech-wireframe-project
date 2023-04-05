@@ -13,6 +13,7 @@ struct Grid {
     sfVector3f cube_scaling_axis_factors;
     sfVector3f rotation_axes_deg;
     sfVector3f translation_vector;
+    sfVector2f (*projector_3d_to_2d)(sfVector3f, float);
 };
 
 void draw_parallel_ground_line(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f start_pos,

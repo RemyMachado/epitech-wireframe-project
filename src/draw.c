@@ -36,7 +36,6 @@ bool is_in_bounds(struct framebuffer *framebuffer, int x, int y) {
     return x >= 0 && x < framebuffer->width && y >= 0 && y < framebuffer->height;
 }
 
-// TODO: consider adding a guard to prevent x,y overflow
 void my_put_pixel(struct framebuffer *framebuffer, int x, int y, sfColor color) {
     const int index = (y * framebuffer->width) * 4 + x * 4;
 
