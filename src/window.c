@@ -9,7 +9,7 @@ const char *WINDOW_TITLE = "Epitech-Wireframe";
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const int WINDOW_BITS_PER_PIXEL = 32;
-const int FRAMERATE_LIMIT = 300;// TODO: 30
+const int FRAMERATE_LIMIT = 300;
 
 int run_window_loop(struct Grid *grid) {
     sfVideoMode videoMode = {WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_BITS_PER_PIXEL};
@@ -124,6 +124,16 @@ int run_window_loop(struct Grid *grid) {
                 if (event.key.code == sfKeyW) {
                     printf("the 'W' key was pressed\n");
                     grid->translation_vector.z += 10;
+                }
+
+                /* PROJECTIONS */
+                if (event.key.code == sfKeyEnter) {
+                    printf("the 'Enter' key was pressed\n");
+                    grid->projector_3d_to_2d = &my_isometric_grid_projection;
+                }
+                if (event.key.code == sfKeySpace) {
+                    printf("the 'Space' key was pressed\n");
+                    grid->projector_3d_to_2d = &my_parallel_grid_projection;
                 }
             }
         }

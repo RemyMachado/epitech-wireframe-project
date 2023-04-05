@@ -47,9 +47,8 @@ void draw_projected_line(struct framebuffer *framebuffer, struct Grid *grid, sfV
                          from_color.b + (to_color.b - from_color.b) * end_ratio,
                          from_color.a + (to_color.a - from_color.a) * end_ratio};
 
-    my_draw_line_gradient(framebuffer, grid->projector_3d_to_2d(transformed_start_pos, grid->parallel_angle_deg),
-                          grid->projector_3d_to_2d(transformed_end_pos, grid->parallel_angle_deg), start_color,
-                          end_color);
+    my_draw_line_gradient(framebuffer, grid->projector_3d_to_2d(grid, transformed_start_pos),
+                          grid->projector_3d_to_2d(grid, transformed_end_pos), start_color, end_color);
     //    my_draw_line(framebuffer, my_parallel_projection(transformed_start_pos, grid->parallel_angle_deg),
     //                 my_parallel_projection(transformed_end_pos, grid->parallel_angle_deg), color);
 }
@@ -146,4 +145,12 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
             }
         }
     }
+}
+
+sfVector2f my_parallel_grid_projection(struct Grid *grid, sfVector3f pos3d) {
+    return my_parallel_projection(pos3d, grid->parallel_angle_deg);
+}
+
+sfVector2f my_isometric_grid_projection(struct Grid *grid, sfVector3f pos3d) {
+    return my_isometric_projection(pos3d, grid->isometric_angle_deg);
 }

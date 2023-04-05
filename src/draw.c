@@ -112,8 +112,6 @@ void my_put_square_matrix(struct framebuffer *framebuffer, int squareSize, int m
     }
 }
 
-// TODO: isometric projection
-
 /*
  * Array terminated by sentinel point (FLT_MAX, FLT_MAX)
  * */

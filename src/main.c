@@ -43,9 +43,9 @@ void count_rows_cols(const char *filename, int *rows, int *cols) {
     fclose(file);
 }
 
-struct Grid *init_grid(const char *filename, int rows, int cols, float parallel_angle_deg, sfVector3f pos,
-                       sfVector3f cube_scaling_axis_factors, sfVector3f rotation_axes_deg,
-                       sfVector3f translation_vector, sfVector2f (*projector_3d_to_2d)(sfVector3f, float)) {
+struct Grid *init_grid(const char *filename, int rows, int cols, float parallel_angle_deg, float isometric_angle_deg,
+                       sfVector3f pos, sfVector3f cube_scaling_axis_factors, sfVector3f rotation_axes_deg,
+                       sfVector3f translation_vector, sfVector2f (*projector_3d_to_2d)(struct Grid *, sfVector3f)) {
     FILE *file;
     // Allocate memory for the grid...
     // ...struct
@@ -54,6 +54,7 @@ struct Grid *init_grid(const char *filename, int rows, int cols, float parallel_
     grid->cols = cols;
     grid->max_value = 0;
     grid->parallel_angle_deg = parallel_angle_deg;
+    grid->isometric_angle_deg = isometric_angle_deg;
     grid->pos = pos;
     grid->cube_scaling_axis_factors = cube_scaling_axis_factors;
     grid->rotation_axes_deg = rotation_axes_deg;
@@ -112,8 +113,8 @@ int main(int argc, char **argv) {
     // print the number of rows and columns
     printf("rows: %d, cols: %d\n", rows, cols);
 
-    grid = init_grid(argv[1], rows, cols, 45, (sfVector3f){0, 0, 0}, (sfVector3f){50, 50, 50}, (sfVector3f){0, 0, 0},
-                     (sfVector3f){800, 500, 0}, &my_parallel_projection);
+    grid = init_grid(argv[1], rows, cols, 45, 60, (sfVector3f){0, 0, 0}, (sfVector3f){50, 50, 50},
+                     (sfVector3f){0, 0, 0}, (sfVector3f){800, 500, 0}, &my_parallel_grid_projection);
 
     // Output the grid
     for (row = 0; row < rows; row++) {
