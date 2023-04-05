@@ -129,10 +129,16 @@ int run_window_loop(struct Grid *grid) {
         }
 
         /* Draw here */
+        sfColor ground_color = sfCyan;
+        ground_color.a /= 4;
+        sfColor from_color = sfCyan;
+        from_color.a /= 3;
+        sfColor to_color = sfCyan;
+
         //        parallel_projection_test(framebuffer);
-        draw_ground(framebuffer, grid, (sfColor){255, 255, 255, 120});
-        draw_vertices(framebuffer, grid, sfWhite);
-        draw_roof(framebuffer, grid, sfWhite);
+        draw_ground(framebuffer, grid, ground_color);
+        draw_vertices(framebuffer, grid, from_color, to_color);
+        draw_roof(framebuffer, grid, from_color, to_color);
         //        my_draw_line(framebuffer, (sfVector2f){500, 500}, (sfVector2f){600, 600}, sfWhite);
 
         /* Update the texture from the pixels array of the framebuffer */

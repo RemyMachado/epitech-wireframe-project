@@ -20,15 +20,34 @@ sfVector3f apply_all_transformations_3d(sfVector3f initial_vector, struct Grid *
 }
 
 void draw_parallel_line(struct framebuffer *framebuffer, struct Grid *grid, sfVector3f start_pos, sfVector3f end_pos,
-                        sfColor color) {
+                        sfColor from_color, sfColor to_color) {
+    float max_height = grid->max_value * grid->cube_scaling_axis_factors.z;
+
     sfVector3f transformed_start_pos = apply_all_transformations_3d(start_pos, grid);
     sfVector3f transformed_end_pos = apply_all_transformations_3d(end_pos, grid);
 
-    my_draw_line(framebuffer, my_parallel_projection(transformed_start_pos, grid->parallel_angle_deg),
-                 my_parallel_projection(transformed_end_pos, grid->parallel_angle_deg), color);
+    // compute from_color and to_color
+    // the color is a gradient with to_color corresponding to `max_height` and from_color to 0
+    float start_ratio = start_pos.z / max_height;
+    float end_ratio = end_pos.z / max_height;
+    sfColor start_color = {(from_color.r + (to_color.r - from_color.r) * start_ratio),
+                           from_color.g + (to_color.g - from_color.g) * start_ratio,
+                           from_color.b + (to_color.b - from_color.b) * start_ratio,
+                           from_color.a + (to_color.a - from_color.a) * start_ratio};
+
+    sfColor end_color = {from_color.r + (to_color.r - from_color.r) * end_ratio,
+                         from_color.g + (to_color.g - from_color.g) * end_ratio,
+                         from_color.b + (to_color.b - from_color.b) * end_ratio,
+                         from_color.a + (to_color.a - from_color.a) * end_ratio};
+
+    my_draw_line_gradient(framebuffer, my_parallel_projection(transformed_start_pos, grid->parallel_angle_deg),
+                          my_parallel_projection(transformed_end_pos, grid->parallel_angle_deg), start_color,
+                          end_color);
+    //    my_draw_line(framebuffer, my_parallel_projection(transformed_start_pos, grid->parallel_angle_deg),
+    //                 my_parallel_projection(transformed_end_pos, grid->parallel_angle_deg), color);
 }
 
-void draw_vertices(struct framebuffer *framebuffer, struct Grid *grid, sfColor color) {
+void draw_vertices(struct framebuffer *framebuffer, struct Grid *grid, sfColor from_color, sfColor to_color) {
     sfVector3f start_pos = {0, 0, 0};
     sfVector3f end_pos = {0, 0, 0};
 
@@ -40,12 +59,12 @@ void draw_vertices(struct framebuffer *framebuffer, struct Grid *grid, sfColor c
             end_pos.x = grid->pos.x + j * grid->cube_scaling_axis_factors.x;
             end_pos.y = grid->pos.y + i * grid->cube_scaling_axis_factors.y;
             end_pos.z = grid->pos.z + grid->values[i][j] * grid->cube_scaling_axis_factors.z;
-            draw_parallel_line(framebuffer, grid, start_pos, end_pos, color);
+            draw_parallel_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
         }
     }
 }
 
-void draw_roof(struct framebuffer *framebuffer, struct Grid *grid, sfColor color) {
+void draw_roof(struct framebuffer *framebuffer, struct Grid *grid, sfColor from_color, sfColor to_color) {
     // join the top of each vertex to the top of the vertex on the right
     sfVector3f start_pos = {0, 0, 0};
     sfVector3f end_pos = {0, 0, 0};
@@ -60,13 +79,13 @@ void draw_roof(struct framebuffer *framebuffer, struct Grid *grid, sfColor color
                 end_pos.x = grid->pos.x + (j + 1) * grid->cube_scaling_axis_factors.x;
                 end_pos.y = grid->pos.y + i * grid->cube_scaling_axis_factors.y;
                 end_pos.z = grid->pos.z + grid->values[i][j + 1] * grid->cube_scaling_axis_factors.z;
-                draw_parallel_line(framebuffer, grid, start_pos, end_pos, color);
+                draw_parallel_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
             }
             if (i != grid->rows - 1) {
                 end_pos.x = grid->pos.x + j * grid->cube_scaling_axis_factors.x;
                 end_pos.y = grid->pos.y + (i + 1) * grid->cube_scaling_axis_factors.y;
                 end_pos.z = grid->pos.z + grid->values[i + 1][j] * grid->cube_scaling_axis_factors.z;
-                draw_parallel_line(framebuffer, grid, start_pos, end_pos, color);
+                draw_parallel_line(framebuffer, grid, start_pos, end_pos, from_color, to_color);
             }
         }
     }
@@ -87,7 +106,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
             end_pos.x = grid->pos.x + (j + 1) * grid->cube_scaling_axis_factors.x;
             end_pos.y = grid->pos.y + i * grid->cube_scaling_axis_factors.y;
             end_pos.z = grid->pos.z;
-            draw_parallel_line(framebuffer, grid, start_pos, end_pos, color);
+            draw_parallel_line(framebuffer, grid, start_pos, end_pos, color, color);
 
             // left vertical line
             start_pos.x = grid->pos.x + j * grid->cube_scaling_axis_factors.x;
@@ -96,7 +115,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
             end_pos.x = grid->pos.x + j * grid->cube_scaling_axis_factors.x;
             end_pos.y = grid->pos.y + (i + 1) * grid->cube_scaling_axis_factors.y;
             end_pos.z = grid->pos.z;
-            draw_parallel_line(framebuffer, grid, start_pos, end_pos, color);
+            draw_parallel_line(framebuffer, grid, start_pos, end_pos, color, color);
 
             // bottom horizontal line
             if (i == grid->rows - 2) {
@@ -106,7 +125,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
                 end_pos.x = grid->pos.x + (j + 1) * grid->cube_scaling_axis_factors.x;
                 end_pos.y = grid->pos.y + (i + 1) * grid->cube_scaling_axis_factors.y;
                 end_pos.z = grid->pos.z;
-                draw_parallel_line(framebuffer, grid, start_pos, end_pos, color);
+                draw_parallel_line(framebuffer, grid, start_pos, end_pos, color, color);
             }
             // right vertical line
             if (j == grid->cols - 2) {
@@ -116,7 +135,7 @@ void draw_ground(struct framebuffer *framebuffer, struct Grid *grid, sfColor col
                 end_pos.x = grid->pos.x + (j + 1) * grid->cube_scaling_axis_factors.x;
                 end_pos.y = grid->pos.y + (i + 1) * grid->cube_scaling_axis_factors.y;
                 end_pos.z = grid->pos.z;
-                draw_parallel_line(framebuffer, grid, start_pos, end_pos, color);
+                draw_parallel_line(framebuffer, grid, start_pos, end_pos, color, color);
             }
         }
     }

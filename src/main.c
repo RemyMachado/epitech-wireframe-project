@@ -52,6 +52,7 @@ struct Grid *init_grid(const char *filename, int rows, int cols, float parallel_
     struct Grid *grid = (struct Grid *) malloc(sizeof(struct Grid));
     grid->rows = rows;
     grid->cols = cols;
+    grid->max_value = 0;
     grid->parallel_angle_deg = parallel_angle_deg;
     grid->pos = pos;
     grid->cube_scaling_axis_factors = cube_scaling_axis_factors;
@@ -76,6 +77,7 @@ struct Grid *init_grid(const char *filename, int rows, int cols, float parallel_
         for (int col = 0; col < grid->cols; col++) {
             fscanf(file, "%d", &grid->values[row][col]);
             fscanf(file, ",");
+            grid->max_value = max(grid->max_value, grid->values[row][col]);
         }
         fscanf(file, "\n");
     }

@@ -24,6 +24,10 @@ void my_put_square_matrix(struct framebuffer *framebuffer, int squareSize, int m
                           sfColor topLeftColor, sfColor topRightColor, sfColor bottomRightColor,
                           sfColor bottomLeftColor);
 
+
+sfVector2f *get_line_points(sfVector2f from, sfVector2f to);
+void my_draw_line_gradient(struct framebuffer *framebuffer, sfVector2f from_pos, sfVector2f to_pos, sfColor from_color,
+                           sfColor to_color);
 void my_draw_line(struct framebuffer *framebuffer, sfVector2f from, sfVector2f to, sfColor color);
 
 #endif//EPITECH_WIREFRAME_PROJECT_DRAW_H
